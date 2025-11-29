@@ -1,7 +1,9 @@
-public class Cuenta {
-    private String numeroCuenta;
-    private double saldo;
-    private boolean activa;
+package modelo;
+
+public abstract class Cuenta {
+    protected String numeroCuenta;
+    protected double saldo;
+    protected boolean activa;
 
     public Cuenta(String numeroCuenta, double saldo) {
         this.numeroCuenta = numeroCuenta;
@@ -12,6 +14,10 @@ public class Cuenta {
     // Getters y Setters
     public String getNumeroCuenta() {
         return numeroCuenta;
+    }
+
+    public void setNumeroCuenta(String numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
     }
 
     public double getSaldo() {
@@ -30,6 +36,11 @@ public class Cuenta {
         this.activa = activa;
     }
 
+    // Métodos abstractos que deben implementar las subclases
+    public abstract boolean retiro(double monto);
+    public abstract boolean deposito(double monto);
+    public abstract boolean pago(double monto);
+
     @Override
     public String toString() {
         return "Cuenta{" +
@@ -39,4 +50,3 @@ public class Cuenta {
                 '}';
     }
 }
-

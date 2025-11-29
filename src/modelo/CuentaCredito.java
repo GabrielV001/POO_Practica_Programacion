@@ -1,37 +1,21 @@
-public class CuentaCredito {
-    private String numeroCuenta;
-    private double saldo;
-    private boolean activa;
+package modelo;
+
+public class CuentaCredito extends Cuenta {
     private double limiteCredito;
     private String tipo;
 
     public CuentaCredito(String numeroCuenta, double limiteCredito, String tipo) {
-        this.numeroCuenta = numeroCuenta;
-        this.saldo = 0; // Siempre inicia en 0
-        this.activa = true;
+        super(numeroCuenta, 0); // Siempre inicia con saldo 0
         this.limiteCredito = limiteCredito;
         this.tipo = tipo;
     }
 
-    // Getters y Setters
-    public String getNumeroCuenta() {
-        return numeroCuenta;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
-    }
-
     public double getLimiteCredito() {
         return limiteCredito;
+    }
+
+    public void setLimiteCredito(double limiteCredito) {
+        this.limiteCredito = limiteCredito;
     }
 
     public String getTipo() {
@@ -42,13 +26,18 @@ public class CuentaCredito {
         this.tipo = tipo;
     }
 
-    // Métodos de operaciones
+    @Override
     public boolean retiro(double monto) {
         if (!activa || (saldo - monto) < -limiteCredito) {
             return false;
         }
         saldo -= monto;
         return true;
+    }
+
+    @Override
+    public boolean deposito(double monto) {
+        return false; // Las cuentas de crédito no aceptan depósitos
     }
 
     public boolean abono(double monto) {
@@ -59,6 +48,7 @@ public class CuentaCredito {
         return true;
     }
 
+    @Override
     public boolean pago(double monto) {
         return abono(monto);
     }

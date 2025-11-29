@@ -1,34 +1,14 @@
-public class CuentaAhorro {
-    private String numeroCuenta;
-    private double saldo;
-    private boolean activa;
+package modelo;
+
+public class CuentaAhorro extends Cuenta {
     private double porcentajeInteres;
 
     public CuentaAhorro(String numeroCuenta, double saldo, double porcentajeInteres) {
+        super(numeroCuenta, saldo);
         if (saldo < 100) {
             throw new IllegalArgumentException("El saldo mínimo debe ser 100 dólares");
         }
-        this.numeroCuenta = numeroCuenta;
-        this.saldo = saldo;
-        this.activa = true;
         this.porcentajeInteres = porcentajeInteres;
-    }
-
-    // Getters y Setters
-    public String getNumeroCuenta() {
-        return numeroCuenta;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
     }
 
     public double getPorcentajeInteres() {
@@ -39,13 +19,13 @@ public class CuentaAhorro {
         this.porcentajeInteres = porcentajeInteres;
     }
 
-    // Métodos de operaciones
     public void generarIntereses() {
         if (activa) {
             saldo += saldo * (porcentajeInteres / 100);
         }
     }
 
+    @Override
     public boolean retiro(double monto) {
         if (!activa || monto > saldo || (saldo - monto) < 100) {
             return false;
@@ -54,6 +34,7 @@ public class CuentaAhorro {
         return true;
     }
 
+    @Override
     public boolean deposito(double monto) {
         if (!activa) {
             return false;
@@ -62,6 +43,7 @@ public class CuentaAhorro {
         return true;
     }
 
+    @Override
     public boolean pago(double monto) {
         return retiro(monto);
     }

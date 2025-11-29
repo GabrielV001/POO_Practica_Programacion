@@ -1,34 +1,11 @@
-public class CuentaDebito {
-    private String numeroCuenta;
-    private double saldo;
-    private boolean activa;
+package modelo;
+
+public class CuentaDebito extends Cuenta {
     private double porcentajeInteres;
 
     public CuentaDebito(String numeroCuenta, double saldo, double porcentajeInteres) {
-        if (saldo < 0) {
-            throw new IllegalArgumentException("El saldo no puede ser negativo");
-        }
-        this.numeroCuenta = numeroCuenta;
-        this.saldo = saldo;
-        this.activa = true;
+        super(numeroCuenta, saldo);
         this.porcentajeInteres = porcentajeInteres;
-    }
-
-    // Getters y Setters
-    public String getNumeroCuenta() {
-        return numeroCuenta;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
     }
 
     public double getPorcentajeInteres() {
@@ -39,13 +16,13 @@ public class CuentaDebito {
         this.porcentajeInteres = porcentajeInteres;
     }
 
-    // Métodos de operaciones
     public void generarIntereses() {
         if (activa) {
             saldo += saldo * (porcentajeInteres / 100);
         }
     }
 
+    @Override
     public boolean retiro(double monto) {
         if (!activa || monto > saldo) {
             return false;
@@ -54,6 +31,7 @@ public class CuentaDebito {
         return true;
     }
 
+    @Override
     public boolean deposito(double monto) {
         if (!activa) {
             return false;
@@ -62,6 +40,7 @@ public class CuentaDebito {
         return true;
     }
 
+    @Override
     public boolean pago(double monto) {
         return retiro(monto);
     }
@@ -76,5 +55,4 @@ public class CuentaDebito {
                 '}';
     }
 }
-
 

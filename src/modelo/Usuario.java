@@ -1,10 +1,10 @@
-import java.util.ArrayList;
+package modelo;
 
-public class Usuario {
-    private String nombreCompleto;
-    private String cedula;
-    private String correoElectronico;
-    private String contrasenia;
+public abstract class Usuario {
+    protected String nombreCompleto;
+    protected String cedula;
+    protected String correoElectronico;
+    protected String contrasenia;
 
     public Usuario(String nombreCompleto, String cedula, String correoElectronico, String contrasenia) {
         this.nombreCompleto = nombreCompleto;
@@ -13,7 +13,7 @@ public class Usuario {
         this.contrasenia = contrasenia;
     }
 
-    // Getters y Setters
+    // Agregar getters y setters
     public String getNombreCompleto() {
         return nombreCompleto;
     }
@@ -55,3 +55,4 @@ public class Usuario {
                 '}';
     }
 }
+

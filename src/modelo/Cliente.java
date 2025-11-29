@@ -1,23 +1,19 @@
-import java.util.ArrayList;
+package modelo;
 
-public class Cliente {
-    private String nombreCompleto;
-    private String cedula;
-    private String correoElectronico;
-    private String contrasenia;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Cliente extends Usuario {
     private String sexo;
     private String profesion;
     private String direccion;
-    private ArrayList<CuentaAhorro> cuentasAhorro;
-    private ArrayList<CuentaDebito> cuentasDebito;
-    private ArrayList<CuentaCredito> cuentasCredito;
+    private List<CuentaAhorro> cuentasAhorro;
+    private List<CuentaDebito> cuentasDebito;
+    private List<CuentaCredito> cuentasCredito;
 
     public Cliente(String nombreCompleto, String cedula, String correoElectronico,
                    String contrasenia, String sexo, String profesion, String direccion) {
-        this.nombreCompleto = nombreCompleto;
-        this.cedula = cedula;
-        this.correoElectronico = correoElectronico;
-        this.contrasenia = contrasenia;
+        super(nombreCompleto, cedula, correoElectronico, contrasenia);
         this.sexo = sexo;
         this.profesion = profesion;
         this.direccion = direccion;
@@ -25,40 +21,7 @@ public class Cliente {
         this.cuentasDebito = new ArrayList<>();
         this.cuentasCredito = new ArrayList<>();
     }
-
-    // Getters y Setters
-    public String getNombreCompleto() {
-        return nombreCompleto;
-    }
-
-    public void setNombreCompleto(String nombreCompleto) {
-        this.nombreCompleto = nombreCompleto;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    public String getCorreoElectronico() {
-        return correoElectronico;
-    }
-
-    public void setCorreoElectronico(String correoElectronico) {
-        this.correoElectronico = correoElectronico;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-
+    // Getters y Setters adicionales
     public String getSexo() {
         return sexo;
     }
@@ -96,21 +59,40 @@ public class Cliente {
         cuentasCredito.add(cuenta);
     }
 
-    public ArrayList<CuentaAhorro> getCuentasAhorro() {
+    public List<CuentaAhorro> getCuentasAhorro() {
         return cuentasAhorro;
     }
 
-    public ArrayList<CuentaDebito> getCuentasDebito() {
+    public List<CuentaDebito> getCuentasDebito() {
         return cuentasDebito;
     }
 
-    public ArrayList<CuentaCredito> getCuentasCredito() {
+    public List<CuentaCredito> getCuentasCredito() {
         return cuentasCredito;
+    }
+
+    // Método para calcular saldo consolidado
+    public double calcularSaldoConsolidado() {
+        double saldoTotal = 0;
+
+        for (CuentaAhorro cuenta : cuentasAhorro) {
+            saldoTotal += cuenta.getSaldo();
+        }
+
+        for (CuentaDebito cuenta : cuentasDebito) {
+            saldoTotal += cuenta.getSaldo();
+        }
+
+        for (CuentaCredito cuenta : cuentasCredito) {
+            saldoTotal += cuenta.getSaldo();
+        }
+
+        return saldoTotal;
     }
 
     @Override
     public String toString() {
-        return "Cliente{" +
+        return "model.Cliente{" +
                 "nombreCompleto='" + nombreCompleto + '\'' +
                 ", cedula='" + cedula + '\'' +
                 ", correoElectronico='" + correoElectronico + '\'' +
