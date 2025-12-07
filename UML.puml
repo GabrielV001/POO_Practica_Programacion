@@ -1,0 +1,191 @@
+@startuml
+
+' Configuración del estilo
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam packageStyle rectangle
+
+' Paquetes
+package "main" {
+    class Main {
+        + {static} main(args: String[]): void
+        - {static} verificarConexionBD(): boolean
+        - {static} verificarAdministrador(): boolean
+    }
+}
+
+package "utils" {
+    class ConexionDB {
+        - {static} URL: String
+        - {static} USER: String
+        - {static} PASSWORD: String
+        + {static} obtenerConexion(): Connection
+    }
+}
+
+package "modelo" {
+    abstract class Usuario {
+        # nombreCompleto: String
+        # cedula: String
+        # correoElectronico: String
+        # contrasenia: String
+        + getNombreCompleto(): String
+        + getCedula(): String
+        + getCorreoElectronico(): String
+        + getContrasenia(): String
+    }
+
+    class Administrador extends Usuario {
+        + Administrador(nombreCompleto: String, cedula: String, correoElectronico: String, contrasenia: String)
+    }
+
+    class Cliente extends Usuario {
+        - sexo: String
+        - profesion: String
+        - direccion: String
+        - cuentasAhorro: List<CuentaAhorro>
+        - cuentasDebito: List<CuentaDebito>
+        - cuentasCredito: List<CuentaCredito>
+        + agregarCuentaAhorro(CuentaAhorro): void
+        + agregarCuentaDebito(CuentaDebito): void
+        + agregarCuentaCredito(CuentaCredito): void
+        + calcularSaldoConsolidado(): double
+    }
+
+    abstract class Cuenta {
+        # numeroCuenta: String
+        # saldo: double
+        # activa: boolean
+        + getNumeroCuenta(): String
+        + getSaldo(): double
+        + isActiva(): boolean
+        + {abstract} retiro(monto: double): boolean
+        + {abstract} deposito(monto: double): boolean
+        + {abstract} pago(monto: double): boolean
+    }
+
+    class CuentaAhorro extends Cuenta {
+        - porcentajeInteres: double
+        + generarIntereses(): void
+    }
+
+    class CuentaDebito extends Cuenta {
+        - porcentajeInteres: double
+        + generarIntereses(): void
+    }
+
+    class CuentaCredito extends Cuenta {
+        - limiteCredito: double
+        - tipo: String
+        + abono(monto: double): boolean
+    }
+}
+
+package "dao" {
+    interface IDAO<T> {
+        + insertar(T): void
+        + obtenerPorId(id: String): T
+        + obtenerTodos(): List<T>
+        + actualizar(T): void
+        + eliminar(id: String): void
+    }
+
+    class AdministradorDAO implements IDAO {
+        + insertar(Administrador): void
+        + obtenerPorCorreo(correo: String): Administrador
+        + obtenerTodos(): List<Administrador>
+    }
+
+    class ClienteDAO implements IDAO {
+        + insertar(Cliente): void
+        + obtenerPorCorreo(correo: String): Cliente
+        + obtenerTodos(): List<Cliente>
+    }
+
+    class CuentaAhorroDAO implements IDAO {
+        + insertar(CuentaAhorro, correoCliente: String): void
+        + obtenerPorCliente(correoCliente: String): List<CuentaAhorro>
+        + actualizarSaldo(numeroCuenta: String, saldo: double): void
+    }
+
+    class CuentaDebitoDAO implements IDAO {
+        + insertar(CuentaDebito, correoCliente: String): void
+        + obtenerPorCliente(correoCliente: String): List<CuentaDebito>
+        + actualizarSaldo(numeroCuenta: String, saldo: double): void
+    }
+
+    class CuentaCreditoDAO implements IDAO {
+        + insertar(CuentaCredito, correoCliente: String): void
+        + obtenerPorCliente(correoCliente: String): List<CuentaCredito>
+        + actualizarSaldo(numeroCuenta: String, saldo: double): void
+    }
+}
+
+package "controlador" {
+    class SistemaBancario {
+        - adminDAO: AdministradorDAO
+        - clienteDAO: ClienteDAO
+        - cuentaAhorroDAO: CuentaAhorroDAO
+        - cuentaDebitoDAO: CuentaDebitoDAO
+        - cuentaCreditoDAO: CuentaCreditoDAO
+        + autenticarAdministrador(correo: String, contrasenia: String): boolean
+        + autenticarCliente(correo: String, contrasenia: String): boolean
+        + registrarCliente(Cliente): boolean
+        + realizarTransaccion(numeroCuenta: String, tipoCuenta: String, tipoTransaccion: String, monto: double): boolean
+        + mostrarEstadoCuentas(correoCliente: String): void
+    }
+}
+
+package "vista" {
+    class MenuPrincipal {
+        - scanner: Scanner
+        - sistema: SistemaBancario
+        + mostrarMenu(): void
+        - loginAdministrador(): void
+        - loginCliente(): void
+        - registrarCliente(): void
+    }
+
+    class MenuAdministrador {
+        - scanner: Scanner
+        - sistema: SistemaBancario
+        + mostrarMenu(): void
+        - listarClientes(): void
+        - listarCuentas(): void
+        - gestionarEstadosCuentas(): void
+    }
+
+    class MenuCliente {
+        - scanner: Scanner
+        - sistema: SistemaBancario
+        - correoCliente: String
+        + mostrarMenu(): void
+        - verMisCuentas(): void
+        - realizarTransaccion(): void
+        - verEstadoConsolidado(): void
+    }
+}
+
+' Relaciones
+Main --> MenuPrincipal
+MenuPrincipal --> SistemaBancario
+MenuPrincipal --> MenuAdministrador
+MenuPrincipal --> MenuCliente
+
+Cliente "1" *--> "*" CuentaAhorro
+Cliente "1" *--> "*" CuentaDebito
+Cliente "1" *--> "*" CuentaCredito
+
+SistemaBancario --> AdministradorDAO
+SistemaBancario --> ClienteDAO
+SistemaBancario --> CuentaAhorroDAO
+SistemaBancario --> CuentaDebitoDAO
+SistemaBancario --> CuentaCreditoDAO
+
+AdministradorDAO ..> ConexionDB
+ClienteDAO ..> ConexionDB
+CuentaAhorroDAO ..> ConexionDB
+CuentaDebitoDAO ..> ConexionDB
+CuentaCreditoDAO ..> ConexionDB
+
+@enduml
